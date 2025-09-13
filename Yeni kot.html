@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gül & Yusuf</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body, html { width:100%; height:100%; font-family:Arial,sans-serif; color:white; overflow-x:hidden; }
+
+#bg-video { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1; }
+audio { display:none; }
+
+#login { display:flex; justify-content:center; align-items:center; height:100vh; background:#111; z-index:10; }
+#login-box { background: rgba(255,255,255,0.1); padding:40px; border-radius:20px; text-align:center; box-shadow:0 0 20px rgba(255,105,180,0.5); }
+#login-box h1 { font-family:'Great Vibes', cursive; font-size:48px; color:#ff66a3; margin-bottom:20px; }
+#login-box input { padding:10px; font-size:18px; border-radius:10px; border:none; text-align:center; }
+#login-box button { margin-top:15px; padding:10px 25px; font-size:18px; border:none; border-radius:10px; background:#ff66a3; color:white; cursor:pointer; }
+#error { color:red; margin-top:10px; }
+#login-box p.ipucu { margin-top:10px; font-size:14px; color:#ffb6c1; }
+
+#content { display:none; padding:20px; position:relative; z-index:1; }
+
+.intro-text { font-family:'Great Vibes', cursive; font-size:28px; line-height:1.7; max-width:900px; margin:50px auto; padding:20px; text-align:center; color:#fff; background: rgba(255,192,203,0.1); border-radius:15px; box-shadow:0 0 10px rgba(255,255,255,0.3); }
+
+.gallery { display:flex; flex-direction:column; align-items:center; margin-top:30px; }
+.gallery .photo { position:relative; margin:20px 0; }
+.gallery img { width:350px; max-width:90%; border-radius:15px; cursor:pointer; transition:all 0.3s; display:block; }
+.photo-text { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:20px; text-align:center; text-shadow:2px 2px 5px black; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+.touch-text { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.4); padding:5px 10px; border-radius:10px; font-size:16px; pointer-events:none; }
+
+#map { width:90%; max-width:600px; height:300px; margin:20px auto; border:2px solid white; border-radius:10px; }
+
+.counter { display:flex; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+.time-box { background:rgba(255,105,180,0.8); margin:5px; padding:15px; border-radius:12px; min-width:80px; text-align:center; }
+.time-box h2 { font-size:20px; }
+.time-box p { font-size:14px; }
+
+.snowflake { position:fixed; top:-10px; color:white; user-select:none; z-index:9999; font-size:12px; pointer-events:none; animation-name:fall; animation-timing-function:linear; }
+@keyframes fall {
+  0% { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(100vh) translateX(50px); }
+}
+
+.diary { width:90%; max-width:600px; margin:30px auto; }
+.note { background:#ff66a3; padding:10px 15px; margin:10px 0; border-radius:10px; cursor:pointer; color:white; font-size:18px; }
+.note-content { display:none; background:rgba(255,192,203,0.1); padding:10px 15px; border-radius:10px; margin-bottom:10px; color:white; }
+
+#chat { width:90%; max-width:600px; margin:30px auto; }
+#chat-box { background:rgba(255,192,203,0.1); border-radius:15px; padding:15px; max-height:300px; overflow-y:auto; }
+.message { padding:8px 12px; margin:5px 0; border-radius:12px; max-width:80%; }
+.yours { background:#ff66a3; margin-left:auto; text-align:right; }
+.gul { background:#ffb6c1; margin-right:auto; text-align:left; }
+#chat-input { width:100%; padding:10px; border-radius:10px; border:none; margin-top:10px; }
+#chat-send { padding:10px 20px; margin-top:5px; border:none; border-radius:10px; background:#ff66a3; color:white; cursor:pointer; float:right; }
+</style>
+</head>
+<body>
+
+<video autoplay muted loop id="bg-video">
+  <source src="arka_plan_video.mp4" type="video/mp4">
+</video>
+<audio id="bg-music" loop>
+  <source src="gulum.mp3" type="audio/mp3">
+</audio>
+
+<div id="login">
+  <div id="login-box">
+    <h1>Gül & Yusuf</h1>
+    <input type="password" id="password" placeholder="Şifreyi Gir"><br>
+    <button onclick="checkPassword()">Giriş</button>
+    <p id="error"></p>
+    <p class="ipucu">İpucu: Tanıştığımız yıl</p>
+  </div>
+</div>
+
+<div id="content">
+
+  <h2 style="text-align:center; margin-top:30px;">Galeri</h2>
+  <div class="gallery">
+    <div class="photo" onclick="showQuote(0,this)">
+      <img src="foto1.jpg" alt="Foto 1">
+      <div class="touch-text">Dokun</div>
+    </div>
+    <div class="photo" onclick="showQuote(1,this)">
+      <img src="foto2.jpg" alt="Foto 2">
+      <div class="touch-text">Dokun</div>
+    </div>
+    <div class="photo" onclick="showQuote(2,this)">
+      <img src="foto3.jpg" alt="Foto 3">
+      <div class="touch-text">Dokun</div>
+    </div>
+    <div class="photo" onclick="showQuote(3,this)">
+      <img src="foto4.jpg" alt="Foto 4">
+      <div class="touch-text">Dokun</div>
+    </div>
+  </div>
+
+  <div class="intro-text" id="intro">
+    “Seninle tanıştığım günden beri hayatım bambaşka bir anlam kazandı. Her gülüşünde içimde çiçekler açıyor, her sesinde kalbim huzur buluyor...”
+  </div>
+
+  <h2 style="text-align:center; margin-top:30px;">Hikayenin Başladığı Yer</h2>
+  <iframe id="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3067.214634567345!2d35.32880721556992!3d37.00224577972247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1528e4c9f8a3c3b5%3A0x8e7a41d7e6d6f4a4!2sAdana%20Y%C3%BCre%C4%9Fir%20Yunuso%C4%9Flu!5e0!3m2!1str!2str!4v1694265600000!5m2!1str!2str" width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+  <h2 style="text-align:center; margin-top:30px;">Birlikte Geçirdiğimiz Gün</h2>
+  <div class="counter">
+    <div class="time-box"><h2 id="years">0</h2><p>Yıl</p></div>
+    <div class="time-box"><h2 id="months">0</h2><p>Ay</p></div>
+    <div class="time-box"><h2 id="days">0</h2><p>Gün</p></div>
+    <div class="time-box"><h2 id="hours">0</h2><p>Saat</p></div>
+    <div class="time-box"><h2 id="minutes">0</h2><p>Dakika</p></div>
+    <div class="time-box"><h2 id="seconds">0</h2><p>Saniye</p></div>
+  </div>
+
+  <h2 style="text-align:center; margin-top:50px;">Bizim Günlüğümüz</h2>
+  <div class="diary">
+    <div class="note" onclick="toggleNote(0)">📖 20 Mart 2025</div>
+    <div class="note-content" id="note0">
+      Bugün seninle ilk kez gülümsediğimiz anı hatırladım. Çok güzeldi 💖
+    </div>
+    <div class="note" onclick="toggleNote(1)">📖 25 Mart 2025</div>
+    <div class="note-content" id="note1">
+      Parkta yürüyüş yaptık, el ele tutuşmak çok hoştu 🌸
+    </div>
+    <div class="note" onclick="toggleNote(2)">📖 1 Nisan 2025</div>
+    <div class="note-content" id="note2">
+      Seninle kahve içtiğimiz gün… Kahkahaların hala kulaklarımda 🎶
+    </div>
+  </div>
+
+  <h2 style="text-align:center; margin-top:50px;">Bizim Sohbetimiz</h2>
+  <div id="chat">
+    <div id="chat-box"></div>
+    <input type="text" id="chat-input" placeholder="Mesaj yaz...">
+    <button id="chat-send">Gönder</button>
+  </div>
+
+</div>
+
+<script>
+let correctPassword = "gulyusuf";
+
+function checkPassword(){
+  let pw = document.getElementById("password").value;
+  if(pw === correctPassword){
+    document.getElementById("login").style.display="none";
+    document.getElementById("content").style.display="block";
+    document.getElementById("bg-music").play().catch(()=>{});
+  } else {
+    document.getElementById("error").innerText="Şifre yanlış!";
+  }
+}
+
+// Geri sayım
+let startDate = new Date("2024-09-09T00:00:00");
+function updateCounter(){
+  let now = new Date();
+  let diff = now - startDate;
+  let seconds = Math.floor(diff/1000);
+  let minutes = Math.floor(seconds/60); seconds%=60;
+  let hours = Math.floor(minutes/60); minutes%=60;
+  let days = Math.floor(hours/24); hours%=24;
+  let months = Math.floor(days/30); days%=30;
+  let years = Math.floor(months/12); months%=12;
+  document.getElementById("years").innerText=years;
+  document.getElementById("months").innerText=months;
+  document.getElementById("days").innerText=days;
+  document.getElementById("hours").innerText=hours;
+  document.getElementById("minutes").innerText=minutes;
+  document.getElementById("seconds").innerText=seconds;
+}
+setInterval(updateCounter,1000);
+
+// Günlük notları
+function toggleNote(index){
+  let el = document.getElementById("note"+index);
+  el.style.display = (el.style.display==="block")?"none":"block";
+}
+
+// Galeri sözleri
+let quotes=["Seni seviyorum 💖","Hayatım seninle güzel 🌸","Sen benim mutluluğumsun 🌹","Kalbim hep seninle 💕"];
+function showQuote(i,el){
+  let text = el.querySelector(".photo-text");
+  if(!text){
+    text=document.createElement("div");
+    text.className="photo-text";
+    text.innerText=quotes[i];
+    el.appendChild(text);
+    el.querySelector("img").style.opacity="0.5";
+    setTimeout(()=>{ text.style.opacity=1; },50);
+    setTimeout(()=>{ text.style.opacity=0; el.querySelector("img").style.opacity="1"; },3000);
+  }
+}
+
+// Kar efekti
+for(let i=0;i<100;i++){
+  let snow = document.createElement("div");
+  snow.className="snowflake";
+  snow.style.left=Math.random()*window.innerWidth+"px";
+  snow.style.fontSize=(5+Math.random()*10)+"px";
+  snow.style.animationDuration=(3+Math.random()*2)+"s";
+  snow.innerText="❄";
+  document.body.appendChild(snow);
+}
+
+// Chat
+document.getElementById("chat-send").addEventListener("click",()=>{
+  let val=document.getElementById("chat-input").value;
+  if(val.trim()==="") return;
+  let div=document.createElement("div");
+  div.className="message yours";
+  div.innerText=val;
+  document.getElementById("chat-box").appendChild(div);
+  document.getElementById("chat-input").value="";
+  document.getElementById("chat-box").scrollTop=document.getElementById("chat-box").scrollHeight;
+});
+</script>
+
+</body>
+</html>
